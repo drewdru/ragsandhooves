@@ -3,7 +3,8 @@ from typing import Annotated, Any
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.api.deps import CurrentUser, SessionDep
+from app.api.dependencies.session import SessionDep
+from app.api.dependencies.current_user import CurrentUser
 
 from app.core.dtos.token import Token
 from app.core.dtos.users import UserPublic

@@ -3,11 +3,10 @@ from typing import Any
 from app.api.routes.users.users_service import UsersService
 from fastapi import APIRouter
 
-from app.api.deps import (
-    CurrentUser,
-    SessionDep,
-)
 from app.core.dtos.users import UserPublic, UserRegister
+
+from app.api.dependencies.session import SessionDep
+from app.api.dependencies.current_user import CurrentUser
 
 router = APIRouter(prefix="/users", tags=["users"])
 

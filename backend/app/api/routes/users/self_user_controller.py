@@ -2,10 +2,8 @@ from typing import Any
 from app.api.routes.users.self_user_service import SelfUsersService
 from fastapi import APIRouter
 
-from app.api.deps import (
-    CurrentUser,
-    SessionDep,
-)
+from app.api.dependencies.session import SessionDep
+from app.api.dependencies.current_user import CurrentUser
 from app.core.dtos.message import Message
 from app.core.dtos.users import UpdatePassword, UserPublic, UserUpdateMe
 

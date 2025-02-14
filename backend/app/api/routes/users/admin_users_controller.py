@@ -4,9 +4,9 @@ from app.api.routes.users.admin_users_service import AdminUsersService
 from app.core.repositories.users import UserRepository
 from fastapi import APIRouter, Depends
 
-from app.api.deps import (
+from app.api.dependencies.session import SessionDep
+from app.api.dependencies.current_user import (
     CurrentUser,
-    SessionDep,
     get_current_active_superuser,
 )
 from app.core.dtos.message import Message

@@ -1,6 +1,6 @@
 import uuid
 from typing import Any
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from sqlmodel import Session
 
 from app.core.config import settings
@@ -27,7 +27,7 @@ class AdminUsersService:
         user = UserRepository.get_user_by_email(session=session, email=user_in.email)
         if user:
             raise HTTPException(
-                status_code=400,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="The user with this email already exists in the system.",
             )
 
@@ -75,7 +75,7 @@ class AdminUsersService:
         UsersValidationService.check_current_user_permissions(user, current_user)
         if user == current_user and current_user.is_superuser:
             raise HTTPException(
-                status_code=403, detail="Super users are not allowed to delete themselves"
+                status_code=status.HTTP_403_FORBIDDEN, detail="Super users are not allowed to delete themselves"
             )
         UserRepository.delete_user_by_id(session, user)
         return Message(message="User deleted successfully")

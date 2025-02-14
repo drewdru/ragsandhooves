@@ -96,6 +96,17 @@ class Settings(BaseSettings):
     # TODO: update type to EmailStr when sqlmodel supports it
     FIRST_SUPERUSER: str
     FIRST_SUPERUSER_PASSWORD: str
+    
+    CHROMA_SERVER_AUTHN_CREDENTIALS: str = secrets.token_urlsafe(32)
+    CHROMA_SERVICE_NAME: str = "chroma"
+    CHROMA_PORT: str = "8000"
+    CHROMA_AUTH_PROVIDER: str = "chromadb.auth.token_authn.TokenAuthClientProvider"
+    CHROMA_COLLECTIONS_BASE_URL: str = "http://chroma:8000/api/v2/tenants/default_tenant/databases/default_database/collections"
+    
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def chroma_headers(self) -> dict[str, str]:
+        return {"Authorization": f"Bearer {self.CHROMA_SERVER_AUTHN_CREDENTIALS}"}
 
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":

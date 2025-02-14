@@ -1,7 +1,7 @@
 from typing import Any
 
 from app.core.repositories.users import UserRepository
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import HTMLResponse
 
 from app.core.security import get_password_hash
@@ -33,7 +33,7 @@ class PasswordRecoveryService:
 
         if not user:
             raise HTTPException(
-                status_code=404,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="The user with this email does not exist in the system.",
             )
         password_reset_token = generate_password_reset_token(email=email)
@@ -54,15 +54,15 @@ class PasswordRecoveryService:
         """
         email = verify_password_reset_token(token=body.token)
         if not email:
-            raise HTTPException(status_code=400, detail="Invalid token")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token")
         user = UserRepository.get_user_by_email(session=session, email=email)
         if not user:
             raise HTTPException(
-                status_code=404,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="The user with this email does not exist in the system.",
             )
         elif not user.is_active:
-            raise HTTPException(status_code=400, detail="Inactive user")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user")
         hashed_password = get_password_hash(password=body.new_password)
         user.hashed_password = hashed_password
         session.add(user)
@@ -78,7 +78,7 @@ class PasswordRecoveryService:
 
         if not user:
             raise HTTPException(
-                status_code=404,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="The user with this username does not exist in the system.",
             )
         password_reset_token = generate_password_reset_token(email=email)

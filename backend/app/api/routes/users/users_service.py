@@ -1,7 +1,7 @@
 import uuid
 from typing import Any
 from app.core.repositories.users import UserRepository
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 
 from app.core.dtos.users import UserCreate, UserRegister
 from app.core.models.users import User
@@ -21,7 +21,7 @@ class UsersService:
         user = UserRepository.get_user_by_email(session=session, email=user_in.email)
         if user:
             raise HTTPException(
-                status_code=400,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="The user with this email already exists in the system",
             )
         user_create = UserCreate.model_validate(user_in)
@@ -39,7 +39,7 @@ class UsersService:
         user = session.get(User, user_id)
         if not current_user.is_superuser and user.id != current_user.id:
             raise HTTPException(
-                status_code=403,
+                status_code=status.HTTP_403_FORBIDDEN,
                 detail="The user doesn't have enough privileges",
             )
         return user

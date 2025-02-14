@@ -10,7 +10,7 @@ services:
       start_period: 30s
       timeout: 10s
     volumes:
-      - app-db-data:/var/lib/postgresql/data/pgdata
+      - ./dbdata:/var/lib/postgresql/data/pgdata
     env_file:
       - .env
     environment:
@@ -64,6 +64,8 @@ services:
         restart: true
       prestart:
         condition: service_completed_successfully
+      chroma:
+        condition: service_started
     env_file:
       - .env
     environment:
@@ -111,10 +113,25 @@ services:
       # Enable redirection for HTTP and HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.middlewares=https-redirect
 
-volumes:
-  app-db-data:
+  chroma:
+    container_name: chroma
+    image: chromadb/chroma:latest
+    volumes:
+      - ./chromadb:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=${ANONYMIZED_TELEMETRY:-FALSE}
+      - CHROMA_SERVER_AUTHN_PROVIDER=chromadb.auth.token_authn.TokenAuthenticationServerProvider
+      - CHROMA_SERVER_AUTHN_CREDENTIALS=${CHROMA_SERVER_AUTHN_CREDENTIALS}
+    networks:
+      - default
+    restart: always
+    ports:
+      - 8011:8000
 
 networks:
+  default:
+    driver: bridge
   traefik-public:
     # Allow setting it to false for testing
     external: true

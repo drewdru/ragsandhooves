@@ -3,7 +3,7 @@ from typing import Any
 
 from app.core.models.users import User
 from app.core.repositories.items import ItemsRepository
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from sqlmodel import Session, func, select
 
 from app.core.models.items import Item
@@ -16,9 +16,9 @@ class ItemsValidationService:
     @staticmethod
     def check_current_user_permissions(item: Item, current_user: User):
         if not item:
-            raise HTTPException(status_code=404, detail="Item not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
         if not current_user.is_superuser and (item.owner_id != current_user.id):
-            raise HTTPException(status_code=400, detail="Not enough permissions")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not enough permissions")
 
 class ItemsService:
     """Handles items-related business logic and database operations"""
