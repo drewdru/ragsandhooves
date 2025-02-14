@@ -1,0 +1,1 @@
+# init app as a project folder for uv

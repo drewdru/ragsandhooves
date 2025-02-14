@@ -2,7 +2,7 @@ from typing import Any
 from app.core.models.users import User
 from app.core.repositories.users import UserRepository
 from app.core.services.users.validator import UsersValidationService
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 
 from app.core.security import verify_password
 from app.core.dtos.message import Message
@@ -39,10 +39,10 @@ class SelfUsersService:
         Update own password.
         """
         if not verify_password(body.current_password, current_user.hashed_password):
-            raise HTTPException(status_code=400, detail="Incorrect password")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect password")
         if body.current_password == body.new_password:
             raise HTTPException(
-                status_code=400, detail="New password cannot be the same as the current one"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="New password cannot be the same as the current one"
             )
         UserRepository.update_user(session=session, db_user=current_user, user_in={"password": body.new_password})
         return Message(message="Password updated successfully")
@@ -61,7 +61,7 @@ class SelfUsersService:
         """
         if current_user.is_superuser:
             raise HTTPException(
-                status_code=403, detail="Super users are not allowed to delete themselves"
+                status_code=status.HTTP_403_FORBIDDEN, detail="Super users are not allowed to delete themselves"
             )
         UserRepository.update_user(session=session, user=current_user)
         return Message(message="User deleted successfully")
