@@ -5,6 +5,11 @@
 * [Docker](https://www.docker.com/).
 * [uv](https://docs.astral.sh/uv/) for Python package and environment management.
 
+## Configure
+```bash
+cp .env.example .env
+```
+
 ## Docker Compose
 
 Start the local development environment with Docker Compose following the guide in [../development.md](../development.md).
