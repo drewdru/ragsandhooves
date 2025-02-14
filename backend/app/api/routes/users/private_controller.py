@@ -3,7 +3,7 @@ from typing import Any
 from app.core.repositories.users import UserRepository
 from fastapi import APIRouter
 
-from app.api.deps import SessionDep
+from app.api.dependencies.session import SessionDep
 from app.core.dtos.users import PrivateUserCreate, UserPublic
 
 router = APIRouter(tags=["users"], prefix="/private/users")

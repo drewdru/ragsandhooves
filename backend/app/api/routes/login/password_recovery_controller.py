@@ -3,7 +3,8 @@ from typing import Any
 from fastapi import APIRouter, Depends
 from fastapi.responses import HTMLResponse
 
-from app.api.deps import SessionDep, get_current_active_superuser
+from app.api.dependencies.session import SessionDep
+from app.api.dependencies.current_user import get_current_active_superuser
 
 from app.core.dtos.message import Message
 from app.core.dtos.password import NewPassword
