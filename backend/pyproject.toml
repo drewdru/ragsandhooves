@@ -21,6 +21,12 @@ dependencies = [
     "pydantic-settings<3.0.0,>=2.2.1",
     "sentry-sdk[fastapi]<2.0.0,>=1.40.6",
     "pyjwt<3.0.0,>=2.8.0",
+    "torch==2.2.1+cpu",
+    "sentence_transformers==2.4.0",
+    "langchain>=0.3.18",
+    "langchain-community>=0.3.17",
+    "langchain-openai>=0.3.5",
+    "chromadb>=0.6.3",
 ]
 
 [tool.uv]
@@ -31,6 +37,19 @@ dev-dependencies = [
     "pre-commit<4.0.0,>=3.6.2",
     "types-passlib<2.0.0.0,>=1.7.7.20240106",
     "coverage<8.0.0,>=7.4.3",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu" },
+]
+torchvision = [
+  { index = "pytorch-cpu" },
 ]
 
 [build-system]
