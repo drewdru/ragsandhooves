@@ -174,5 +174,11 @@ cython_debug/
 node_modules/
 /test-results/
 /blob-report/
+
 # private variables
 .env
+
+# chromadb
+chromadb/
+# postgresql
+dbdata/

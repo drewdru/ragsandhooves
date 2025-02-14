@@ -96,6 +96,8 @@ class Settings(BaseSettings):
     # TODO: update type to EmailStr when sqlmodel supports it
     FIRST_SUPERUSER: str
     FIRST_SUPERUSER_PASSWORD: str
+    
+    CHROMA_SERVER_AUTHN_CREDENTIALS: str = secrets.token_urlsafe(32)
 
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
