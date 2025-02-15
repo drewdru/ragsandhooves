@@ -2,7 +2,7 @@ from datetime import datetime
 import uuid
 
 from sqlmodel import Field, Relationship, SQLModel
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from app.core.models.folders import Folder
@@ -32,5 +32,5 @@ class File(SQLModel, table=True):
     knowledge_base_id: uuid.UUID = Field(nullable=False, foreign_key="knowledge_bases.id")
     knowledge_base: "KnowledgeBase" = Relationship(back_populates="files")
 
-    creator_id: uuid.UUID = Field(foreign_key="users.id")
-    creator: "User" = Relationship(back_populates="files")
+    creator_id: Optional[uuid.UUID] = Field(foreign_key="users.id")
+    creator: Optional["User"] = Relationship(back_populates="files")
