@@ -7,10 +7,12 @@ from typing import TYPE_CHECKING, List
 
 from app.core.models.company_users import CompanyUserLink
 from app.core.models.customers_knowledge_bases import CustomerKnowledgeBaseLink
+from app.core.models.invite_users import InviteUsersLink
 
 if TYPE_CHECKING:
     from app.core.models.companies import Company
     from app.core.models.knowledge_bases import KnowledgeBase
+    from app.core.models.invites import Invites
 
 
 # Database model, database table inferred from class name
@@ -36,5 +38,11 @@ class User(SQLModel, table=True):
     knowledge_bases: List["KnowledgeBase"] = Relationship(
         back_populates="users",
         link_model=CustomerKnowledgeBaseLink,
+        cascade_delete=True,
+    )
+    
+    invites: List["Invites"] = Relationship(
+        back_populates="users",
+        link_model=InviteUsersLink,
         cascade_delete=True,
     )

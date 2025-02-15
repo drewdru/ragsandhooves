@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from app.core.models.users import User
     from app.core.models.folders import Folder
     from app.core.models.files import File
+    from app.core.models.invites import Invites
 
 
 class KnowledgeBase(SQLModel, table=True):
@@ -36,3 +37,8 @@ class KnowledgeBase(SQLModel, table=True):
     
     folders: list["Folder"] = Relationship(back_populates="knowledge_base", cascade_delete=True)
     files: list["File"] = Relationship(back_populates="knowledge_base", cascade_delete=True)
+
+    invites: List["Invites"] = Relationship(
+        back_populates="company",
+        cascade_delete=True,
+    )
