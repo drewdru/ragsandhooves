@@ -24,4 +24,4 @@ class DocumentProvider(SQLModel, table=True):
     company: "Company" = Relationship(back_populates="document_providers")
 
     root_folder_id: uuid.UUID = Field(nullable=False, foreign_key="folders.id")
-    root_folder: "Folder" = Relationship(back_populates="document_providers", cascade_delete=True)
+    root_folder: "Folder" = Relationship(back_populates="document_provider", cascade_delete=True)

@@ -37,3 +37,7 @@ class Folder(SQLModel, table=True):
         back_populates="parent",
         cascade_delete=True,
     )
+    flat_files: list["File"] = Relationship(
+        back_populates="root_folder",
+        cascade_delete=True,
+    )
