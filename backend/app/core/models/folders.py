@@ -3,6 +3,7 @@ import uuid
 
 from sqlmodel import Field, Relationship, SQLModel
 from typing import TYPE_CHECKING, Optional
+from sqlalchemy.dialects.postgresql import JSONB
 
 
 if TYPE_CHECKING:
@@ -18,6 +19,8 @@ class Folder(SQLModel, table=True):
     title: str | None = Field(default=None, max_length=255)
     description: str | None = Field(default=None, max_length=255)
     name: str = Field(max_length=255)
+    original_id: str | None = Field(default=None, max_length=255)
+    meta: dict = Field(sa_type=JSONB, nullable=False)
 
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
