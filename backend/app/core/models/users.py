@@ -1,14 +1,22 @@
 import uuid
 
-from app.core.dtos.users import UserBase
+from datetime import datetime
 from pydantic import EmailStr
-from sqlmodel import Field, Relationship
-from typing import TYPE_CHECKING
+from sqlmodel import Field, Relationship, SQLModel
+from typing import TYPE_CHECKING, List
+
+from app.core.models.company_users import CompanyUserLink
+from app.core.models.customers_knowledge_bases import CustomerKnowledgeBaseLink
+
 if TYPE_CHECKING:
-    from app.core.models.items import Item
+    from app.core.models.companies import Company
+    from app.core.models.knowledge_bases import KnowledgeBase
+
 
 # Database model, database table inferred from class name
-class User(UserBase, table=True):
+class User(SQLModel, table=True):
+    __tablename__ = "users"
+
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     email: EmailStr = Field(unique=True, index=True, max_length=255)
@@ -17,4 +25,16 @@ class User(UserBase, table=True):
     is_staff: bool = False
     full_name: str | None = Field(default=None, max_length=255)
     
-    items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
+    
+    companies: List["Company"] = Relationship(
+        back_populates="users",
+        link_model=CompanyUserLink,
+        cascade_delete=True,
+    )
+    knowledge_bases: List["KnowledgeBase"] = Relationship(
+        back_populates="users",
+        link_model=CustomerKnowledgeBaseLink,
+        cascade_delete=True,
+    )
