@@ -49,6 +49,11 @@ services:
     ports:
       - "5432:5432"
 
+  chroma:
+    restart: "no"
+    ports:
+      - 8011:8000
+  
   backend:
     restart: "no"
     ports:
