@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from app.core.models.users import User
     from app.core.models.knowledge_bases import KnowledgeBase
     from app.core.models.document_providers import DocumentProvider
-    from app.core.models.invites import Invites
+    from app.core.models.invites import Invite
 
 
 class Company(SQLModel, table=True):
@@ -47,7 +47,7 @@ class Company(SQLModel, table=True):
         cascade_delete=True,
     )
 
-    invites: List["Invites"] = Relationship(
+    invites: List["Invite"] = Relationship(
         back_populates="company",
         cascade_delete=True,
     )

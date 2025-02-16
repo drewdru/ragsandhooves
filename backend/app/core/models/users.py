@@ -12,7 +12,7 @@ from app.core.models.invite_users import InviteUsersLink
 if TYPE_CHECKING:
     from app.core.models.companies import Company
     from app.core.models.knowledge_bases import KnowledgeBase
-    from app.core.models.invites import Invites
+    from app.core.models.invites import Invite
 
 
 # Database model, database table inferred from class name
@@ -41,7 +41,7 @@ class User(SQLModel, table=True):
         cascade_delete=True,
     )
     
-    invites: List["Invites"] = Relationship(
+    invites: List["Invite"] = Relationship(
         back_populates="users",
         link_model=InviteUsersLink,
         cascade_delete=True,
