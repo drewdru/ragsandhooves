@@ -1,7 +1,6 @@
 from typing import Any
 import uuid
 
-from app.core.models.items import Item
 from sqlmodel import Session, select, func, select, col, delete
 
 from app.core.security import get_password_hash, verify_password
@@ -73,8 +72,6 @@ class UserRepository:
         session: Session,
         user: User,
     ) -> User | None:
-        statement = delete(Item).where(col(Item.owner_id) == user.id)
-        session.exec(statement)  # type: ignore
         session.delete(user)
         session.commit()
 
