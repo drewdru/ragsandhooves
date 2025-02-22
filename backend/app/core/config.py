@@ -128,6 +128,7 @@ class Settings(BaseSettings):
         )
 
         return self
-
+    
+    CO_API_KEY: str
 
 settings = Settings()  # type: ignore

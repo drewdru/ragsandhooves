@@ -4,6 +4,7 @@ from app.core.dtos.users import UserBase
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from app.core.models.items import Item
 
@@ -16,5 +17,6 @@ class User(UserBase, table=True):
     is_superuser: bool = False
     is_staff: bool = False
     full_name: str | None = Field(default=None, max_length=255)
-    
+    company_id: uuid.UUID
+
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
