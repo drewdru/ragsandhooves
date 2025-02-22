@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from app.core.models.folders import Folder
     from app.core.models.files import File
     from app.core.models.invites import Invite
+    from app.core.models.agents_parameters import AgentsParameters
 
 
 class KnowledgeBase(SQLModel, table=True):
@@ -41,4 +42,10 @@ class KnowledgeBase(SQLModel, table=True):
     invites: List["Invite"] = Relationship(
         back_populates="company",
         cascade_delete=True,
+    )
+
+    # Use to save parameters of agents like Question Extractions for every particular Knowledge Base
+    agents_parameters: List["AgentsParameters"] = Relationship(
+        back_populates="knowledge_base", 
+        cascade_delete=True
     )

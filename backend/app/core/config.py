@@ -121,6 +121,8 @@ class Settings(BaseSettings):
     
     # region GOOGLE
     GOOGLE_SERVICE_ACCOUNT_KEY: str | None = None
+    GOOGLE_GEMINI_API_KEY: str | None = None
+
     # endregion
 
     # region TOOLS
