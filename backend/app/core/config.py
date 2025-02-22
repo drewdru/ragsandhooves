@@ -1,7 +1,6 @@
 import secrets
 import warnings
-from typing import Annotated, Any, Literal
-
+from typing import Annotated, Literal
 from pydantic import (
     AnyUrl,
     BeforeValidator,
@@ -14,16 +13,13 @@ from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing_extensions import Self
 
+from app.core.utils.cors import parse_cors
 
-def parse_cors(v: Any) -> list[str] | str:
-    if isinstance(v, str) and not v.startswith("["):
-        return [i.strip() for i in v.split(",")]
-    elif isinstance(v, list | str):
-        return v
-    raise ValueError(v)
 
 
 class Settings(BaseSettings):
+    # region SYSTEM
+    PROJECT_NAME: str
     model_config = SettingsConfigDict(
         # Use top level .env file (one level above ./backend/)
         env_file="../.env",
@@ -34,9 +30,18 @@ class Settings(BaseSettings):
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
-    FRONTEND_HOST: str = "http://localhost:5173"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
+    
+    # TODO: update type to EmailStr when sqlmodel supports it
+    FIRST_SUPERUSER: str
+    FIRST_SUPERUSER_PASSWORD: str
+    # endregion
 
+    # region LINKS
+    FRONTEND_HOST: str = "http://localhost:5173"
+    # endregion
+    
+    # region CORS
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = []
@@ -47,9 +52,13 @@ class Settings(BaseSettings):
         return [str(origin).rstrip("/") for origin in self.BACKEND_CORS_ORIGINS] + [
             self.FRONTEND_HOST
         ]
+    # endregion
 
-    PROJECT_NAME: str
+    # region LOGS
     SENTRY_DSN: HttpUrl | None = None
+    # endregion
+    
+    # region POSTGRES
     POSTGRES_SERVER: str
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str
@@ -67,7 +76,9 @@ class Settings(BaseSettings):
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB,
         )
+    # endregion
 
+    # region EMAIL
     SMTP_TLS: bool = True
     SMTP_SSL: bool = False
     SMTP_PORT: int = 587
@@ -93,10 +104,9 @@ class Settings(BaseSettings):
 
     # TODO: update type to EmailStr when sqlmodel supports it
     EMAIL_TEST_USER: str = "test@example.com"
-    # TODO: update type to EmailStr when sqlmodel supports it
-    FIRST_SUPERUSER: str
-    FIRST_SUPERUSER_PASSWORD: str
+    # endregion
     
+    # region CHROMA
     CHROMA_SERVER_AUTHN_CREDENTIALS: str = secrets.token_urlsafe(32)
     CHROMA_SERVICE_NAME: str = "chroma"
     CHROMA_PORT: str = "8000"
@@ -107,7 +117,13 @@ class Settings(BaseSettings):
     @property
     def chroma_headers(self) -> dict[str, str]:
         return {"Authorization": f"Bearer {self.CHROMA_SERVER_AUTHN_CREDENTIALS}"}
+    # endregion
+    
+    # region GOOGLE
+    GOOGLE_SERVICE_ACCOUNT_KEY: str | None = None
+    # endregion
 
+    # region TOOLS
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = (
@@ -128,7 +144,7 @@ class Settings(BaseSettings):
         )
 
         return self
-    
-    CO_API_KEY: str
+    # endregion
+
 
 settings = Settings()  # type: ignore
