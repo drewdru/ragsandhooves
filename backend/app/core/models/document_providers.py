@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
 
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, ForeignKeyConstraint, Relationship, SQLModel
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -24,4 +24,13 @@ class DocumentProvider(SQLModel, table=True):
     company: "Company" = Relationship(back_populates="document_providers")
 
     root_folder_id: uuid.UUID = Field(nullable=False, foreign_key="folders.id")
-    root_folder: "Folder" = Relationship(back_populates="document_provider", cascade_delete=True)
+    root_folder: "Folder" = Relationship(
+        back_populates="document_provider",
+    )
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['root_folder_id'], ['folders.id'],
+            ondelete="CASCADE",
+        ),
+    )

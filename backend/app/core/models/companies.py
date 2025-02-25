@@ -35,12 +35,10 @@ class Company(SQLModel, table=True):
     users: List["User"] = Relationship(
         back_populates="companies",
         link_model=CompanyUserLink,
-        cascade_delete=True,
     )
     knowledge_bases: List["KnowledgeBase"] = Relationship(
         back_populates="companies",
         link_model=CompanyKnowledgeBaseLink,
-        cascade_delete=True,
     )
     document_providers: list["DocumentProvider"] = Relationship(
         back_populates="company",
@@ -49,5 +47,4 @@ class Company(SQLModel, table=True):
 
     invites: List["Invite"] = Relationship(
         back_populates="company",
-        cascade_delete=True,
     )
