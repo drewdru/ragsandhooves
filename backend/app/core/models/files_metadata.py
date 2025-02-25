@@ -24,6 +24,6 @@ class FileMetadata(SQLModel, table=True):
     meta: dict = Field(sa_type=JSONB, nullable=False)
 
     file: Optional["File"] = Relationship(
-        sa_relationship_kwargs={'uselist': False},
+        sa_relationship_kwargs={'uselist': False, 'single_parent': True},
         back_populates="file_metadata"
     )

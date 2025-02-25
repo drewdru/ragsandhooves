@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlmodel import Column, Field, SQLModel, Relationship, String
+from sqlmodel import Column, Field, ForeignKeyConstraint, SQLModel, Relationship, String
 
 from app.core.types.enums.company_user_role import CompanyUserRoleEnum
 from app.core.models.invite_users import InviteUsersLink
@@ -33,13 +33,23 @@ class Invite(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
 
     company_id: uuid.UUID = Field(foreign_key="companies.id")
-    company: "Company" = Relationship(back_populates="invites", cascade_delete=True)
+    company: "Company" = Relationship(back_populates="invites")
 
     knowledge_base_id: Optional[uuid.UUID] = Field(foreign_key="knowledge_bases.id")
-    knowledge_base: Optional["KnowledgeBase"] = Relationship(back_populates="invites", cascade_delete=True)
+    knowledge_base: Optional["KnowledgeBase"] = Relationship(back_populates="invites")
 
     users: List["User"] = Relationship(
         back_populates="invites",
         link_model=InviteUsersLink,
-        cascade_delete=True,
+    )
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['company_id'], ['companies.id'],
+            ondelete="CASCADE",
+        ),
+        ForeignKeyConstraint(
+            ['knowledge_base_id'], ['knowledge_bases.id'],
+            ondelete="CASCADE",
+        ),
     )

@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
 
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, ForeignKeyConstraint, Relationship, SQLModel
 from typing import TYPE_CHECKING, Optional
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -29,18 +29,28 @@ class Folder(SQLModel, table=True):
     knowledge_base: "KnowledgeBase" = Relationship(back_populates="folders")
 
     parent_id: Optional[uuid.UUID] = Field(default=None, foreign_key="folders.id")
-    parent: Optional["Folder"] = Relationship(back_populates="files")
+    parent: Optional["Folder"] = Relationship(
+        sa_relationship_kwargs={"remote_side": "Folder.id"} ,
+        back_populates="sub_folders"
+    )
     sub_folders: list["Folder"] = Relationship(back_populates="parent")
 
     document_provider: Optional["DocumentProvider"] = Relationship(
-        sa_relationship_kwargs={'uselist': False},
-        back_populates="root_folder"
+        sa_relationship_kwargs={'uselist': False, 'single_parent': True},
+        back_populates="root_folder",
     )
     files: list["File"] = Relationship(
         back_populates="parent",
-        cascade_delete=True,
+        sa_relationship_kwargs={"foreign_keys": "File.parent_id"},
     )
     flat_files: list["File"] = Relationship(
         back_populates="root_folder",
-        cascade_delete=True,
+        sa_relationship_kwargs={"foreign_keys": "File.root_folder_id"},
+    )
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['parent_id'], ['folders.id'],
+            ondelete="CASCADE",
+        ),
     )

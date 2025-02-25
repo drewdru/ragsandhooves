@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from app.core.models.users import User
+    from app.core.models.files import File
 
 
 class RecognitionResult(SQLModel, table=True):
@@ -22,17 +23,28 @@ class RecognitionResult(SQLModel, table=True):
     status: str = Field(default="pending")
     
     parent_id: Optional[uuid.UUID] = Field(default=None, foreign_key="recognition_results.id")
-    parent: Optional["RecognitionResult"] = Relationship(back_populates="children")
+    parent: Optional["RecognitionResult"] = Relationship(
+        sa_relationship_kwargs={"remote_side": "RecognitionResult.id"} ,
+        back_populates="children"
+    )
     children: list["RecognitionResult"] = Relationship(back_populates="parent")
 
     file_id: uuid.UUID = Field(foreign_key="files.id")
-    file: "User" = Relationship(back_populates="recognition_results")
+    file: "File" = Relationship(
+        sa_relationship_kwargs={'uselist': False, 'single_parent': True},
+        back_populates="recognition_results", 
+        cascade_delete=True,
+    )
     
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
 
     creator_id: Optional[uuid.UUID] = Field(foreign_key="users.id")
-    creator: Optional["User"] = Relationship(back_populates="recognition_results")
+    creator: Optional["User"] = Relationship(back_populates="recognition_result_created")
 
-    recognition_result_metadata_id: Optional[uuid.UUID] = Field(nullable=False, foreign_key="recognition_results_metadata.id")
-    recognition_result_metadata: Optional["RecognitionResultsMetadata"] = Relationship(back_populates="recognition_result", cascade_delete=True)
+    recognition_result_metadata_id: Optional[uuid.UUID] = Field(foreign_key="recognition_results_metadata.id")
+    recognition_result_metadata: Optional["RecognitionResultsMetadata"] = Relationship(
+        sa_relationship_kwargs={'uselist': False, 'single_parent': True},
+        back_populates="recognition_result",
+        cascade_delete=True,
+    )

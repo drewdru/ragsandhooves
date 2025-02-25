@@ -6,7 +6,7 @@ from sqlmodel import Field, Relationship, SQLModel
 from sqlalchemy.dialects.postgresql import JSONB
 
 if TYPE_CHECKING:
-    from app.core.models.files import File
+    from app.core.models.recognition_results import RecognitionResult
 
 
 class RecognitionResultsMetadata(SQLModel, table=True):
@@ -19,7 +19,7 @@ class RecognitionResultsMetadata(SQLModel, table=True):
     
     meta: dict = Field(sa_type=JSONB, nullable=False)
 
-    file: Optional["File"] = Relationship(
-        sa_relationship_kwargs={'uselist': False},
+    recognition_result: Optional["RecognitionResult"] = Relationship(
+        sa_relationship_kwargs={'uselist': False, 'single_parent': True},
         back_populates="recognition_result_metadata"
     )

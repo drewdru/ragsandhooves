@@ -1,7 +1,7 @@
 """fix company_user_links role type
 
 Revision ID: 1689102278d1
-Revises: b1b068beffbe
+Revises: 74b2e910d276
 Create Date: 2025-02-15 23:14:06.138887
 
 """
@@ -12,7 +12,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = '1689102278d1'
-down_revision = 'b1b068beffbe'
+down_revision = '74b2e910d276'
 branch_labels = None
 depends_on = None
 
