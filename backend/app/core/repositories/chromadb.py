@@ -8,9 +8,10 @@ from app.core.types.chromadb import GetRequestOptional, QueryRequestOptional
 
 from app.core.config import settings
 
+embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+
 class ChromaDbRepository:
     """Encapsulates all ChromaDb-related CRUD operations."""
-    embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
     
     @staticmethod
     async def get_or_create_collection(collection_name: str) -> Collection:
@@ -52,7 +53,7 @@ class ChromaDbRepository:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="collection_query require question or filter_data['embeddings']")
 
         embeddings = filter_data.get("embeddings", [
-            ChromaDbService.embedding_model.encode(question).tolist()
+            embedding_model.encode(question).tolist()
         ])
         n_results = filter_data.get("n_results", 20)
         include = filter_data.get("include", [

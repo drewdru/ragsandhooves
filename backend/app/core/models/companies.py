@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from app.core.models.users import User
     from app.core.models.knowledge_bases import KnowledgeBase
     from app.core.models.document_providers import DocumentProvider
+    from app.core.models.invites import Invite
 
 
 class Company(SQLModel, table=True):
@@ -34,14 +35,16 @@ class Company(SQLModel, table=True):
     users: List["User"] = Relationship(
         back_populates="companies",
         link_model=CompanyUserLink,
-        cascade_delete=True,
     )
     knowledge_bases: List["KnowledgeBase"] = Relationship(
         back_populates="companies",
         link_model=CompanyKnowledgeBaseLink,
-        cascade_delete=True,
     )
     document_providers: list["DocumentProvider"] = Relationship(
         back_populates="company",
         cascade_delete=True,
+    )
+
+    invites: List["Invite"] = Relationship(
+        back_populates="company",
     )
