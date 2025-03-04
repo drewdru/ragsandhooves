@@ -22,12 +22,17 @@ class User(SQLModel, table=True):
     __tablename__ = "users"
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    hashed_password: str
+    hashed_password: str | None = Field(default=None, max_length=255)
     email: EmailStr = Field(unique=True, index=True, max_length=255)
+    full_name: str | None = Field(default=None, max_length=255)
+    avatar: str | None = Field(default=None)
+    google_id: str | None = Field(default=None)
+
     is_active: bool = True
     is_superuser: bool = False
     is_staff: bool = False
-    full_name: str | None = Field(default=None, max_length=255)
+    is_verified: bool = False
+    verify_token: str = Field(default_factory=uuid.uuid4, max_length=255)
     
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})

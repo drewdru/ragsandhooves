@@ -52,6 +52,12 @@ class UserRepository:
         return session_user
     
     @staticmethod
+    def get_user_by_verify_token(session: Session, token: str) -> User | None:
+        statement = select(User).where(User.verify_token == token)
+        session_user = session.exec(statement).first()
+        return session_user
+    
+    @staticmethod
     def get_user_by_id(
         session: Session,
         user_id: uuid.UUID,

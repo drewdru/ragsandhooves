@@ -13,7 +13,7 @@ from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing_extensions import Self
 
-from app.core.utils.cors import parse_cors
+from app.core.utils.env_helpers import parse_list_env
 
 
 
@@ -29,7 +29,10 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # 60 minutes * 24 hours * 8 days = 8 days
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    CSRF_TOKEN_EXPIRE_MINUTES: int = 30
+    VERIFY_TOKEN_RESEND_EXPIRE_MINUTES: int = 60
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
     
     # TODO: update type to EmailStr when sqlmodel supports it
@@ -39,11 +42,12 @@ class Settings(BaseSettings):
 
     # region LINKS
     FRONTEND_HOST: str = "http://localhost:5173"
+    BACKEND_HOST: str = "http://127.0.0.1:8000"
     # endregion
     
     # region CORS
     BACKEND_CORS_ORIGINS: Annotated[
-        list[AnyUrl] | str, BeforeValidator(parse_cors)
+        list[AnyUrl] | str, BeforeValidator(parse_list_env)
     ] = []
 
     @computed_field  # type: ignore[prop-decorator]
@@ -119,8 +123,30 @@ class Settings(BaseSettings):
         return {"Authorization": f"Bearer {self.CHROMA_SERVER_AUTHN_CREDENTIALS}"}
     # endregion
     
+    # region REDIS
+    REDIS_HOST: str = "ragsandhooves-redis"
+    REDIS_PASSWORD: str = "changethis"
+    # endregion
+    
     # region GOOGLE
     GOOGLE_SERVICE_ACCOUNT_KEY: str | None = None
+    GOOGLE_CLIENT_ID: str | None = None
+    GOOGLE_CLIENT_SECRET: str | None = None
+    GOOGLE_AUTH_REDIRECT_URI: str | None = None
+    GOOGLE_RECAPTCA_SITEKEY: str | None = None
+    GOOGLE_PROJECT_ID: str | None = None
+    GOOGLE_API_KEY: str | None = None
+    # endregion
+    
+    # region WEBHOOKS
+    FRONTEND_WEBHOOK_TOKEN: str | None = None
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def all_system_webhook_tokens(self) -> list[str]:
+        return [
+            self.FRONTEND_WEBHOOK_TOKEN,
+        ]
     # endregion
 
     # region TOOLS

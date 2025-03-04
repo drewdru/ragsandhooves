@@ -170,8 +170,6 @@ Automatic Alternative Docs (ReDoc): http://localhost:8000/redoc
 
 Traefik UI: http://localhost:8090
 
-MailCatcher: http://localhost:1080
-
 ### Development URLs with `localhost.tiangolo.com` Configured
 
 Development URLs, for local development.
@@ -183,5 +181,3 @@ Automatic Interactive Docs (Swagger UI): http://api.localhost.tiangolo.com/docs
 Automatic Alternative Docs (ReDoc): http://api.localhost.tiangolo.com/redoc
 
 Traefik UI: http://localhost.tiangolo.com:8090
-
-MailCatcher: http://localhost.tiangolo.com:1080

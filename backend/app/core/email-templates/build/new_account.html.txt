@@ -1,0 +1,3 @@
+{{ project_name }} - {{_("email.new_account")}}
+{{_("email.welcome_new_account")}}
+{{_("email.verify_email")}} {{ link }}

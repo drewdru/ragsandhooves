@@ -13,6 +13,10 @@ services:
       - ./dbdata:/var/lib/postgresql/data/pgdata
     env_file:
       - .env
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
@@ -33,6 +37,10 @@ services:
     command: bash scripts/prestart.sh
     env_file:
       - .env
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     environment:
       - DOMAIN=${DOMAIN}
       - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
@@ -66,8 +74,14 @@ services:
         condition: service_completed_successfully
       chroma:
         condition: service_started
+      redis:
+        condition: service_started
     env_file:
       - .env
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     environment:
       - DOMAIN=${DOMAIN}
       - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
@@ -86,13 +100,11 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
-
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
       interval: 10s
       timeout: 5s
       retries: 5
-
     build:
       context: ./backend
     labels:
@@ -128,6 +140,29 @@ services:
     restart: always
     ports:
       - 8011:8000
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    container_name: ragsandhooves-redis  
+    image: redis:7.0-alpine
+    env_file:
+      - .env
+    command:
+      - redis-server
+      - /data/redis.conf
+      - --requirepass ${REDIS_PASSWORD-password}
+    volumes:
+      - ./configs/redis/redis.conf:/data/redis.conf
+    networks:
+      - default
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
 
 networks:
   default:
