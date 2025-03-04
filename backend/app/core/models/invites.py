@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class Invite(SQLModel, table=True):
     __tablename__ = "invites"
     
-    code: str = Field(primary_key=True)
+    code: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     title: str | None = Field(max_length=255)
     description: str | None = Field(default=None, max_length=255)
     role: CompanyUserRoleEnum = Field(

@@ -1,5 +1,6 @@
 import uuid
 
+from app.core.dtos.token import Token
 from pydantic import EmailStr
 from sqlmodel import Field, SQLModel
 from pydantic import BaseModel
@@ -10,12 +11,15 @@ class UserBase(SQLModel):
     is_active: bool = True
     is_superuser: bool = False
     is_staff: bool = False
+    is_verified: bool = False
     full_name: str | None = Field(default=None, max_length=255)
+    avatar: str | None = Field(default=None)
 
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=40)
+    google_id: str | None = Field(default=None)
 
 
 class PrivateUserCreate(BaseModel):
@@ -28,15 +32,17 @@ class PrivateUserCreate(BaseModel):
 class UserRegister(SQLModel):
     email: EmailStr = Field(max_length=255)
     password: str = Field(min_length=8, max_length=40)
-    full_name: str | None = Field(default=None, max_length=255)
-    # TODO: ADD optional fields for company
+    captcha: str | None = Field(default=None, max_length=4096)
 
 
 # Properties to receive via API on update, all are optional
 class UserUpdate(UserBase):
     email: EmailStr | None = Field(default=None, max_length=255)  # type: ignore
     password: str | None = Field(default=None, min_length=8, max_length=40)
+    google_id: str | None = Field(default=None)
 
+class UserUpdateVerifyToken(SQLModel):
+    verify_token: uuid.UUID
 
 class UserUpdateMe(SQLModel):
     full_name: str | None = Field(default=None, max_length=255)
@@ -52,6 +58,8 @@ class UpdatePassword(SQLModel):
 class UserPublic(UserBase):
     id: uuid.UUID
 
+class UserAuth(UserPublic, Token):
+    id: uuid.UUID
 
 class UsersPublicPaginated(SQLModel):
     data: list[UserPublic]
