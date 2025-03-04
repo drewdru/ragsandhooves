@@ -3,20 +3,12 @@ from typing import Any
 from app.api.routes.users.users_service import UsersService
 from fastapi import APIRouter
 
-from app.core.dtos.users import UserPublic, UserRegister
+from app.core.dtos.users import UserPublic
 
 from app.api.dependencies.session import SessionDep
 from app.api.dependencies.current_user import CurrentUser
 
 router = APIRouter(prefix="/users", tags=["users"])
-
-
-@router.post("/signup", response_model=UserPublic)
-def register_user(session: SessionDep, user_in: UserRegister) -> Any:
-    """
-    Create new user without the need to be logged in.
-    """
-    return UsersService.register_user(session, user_in)
 
 
 @router.get("/{user_id}", response_model=UserPublic)

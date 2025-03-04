@@ -1,5 +1,6 @@
 import uuid
 from typing import Any
+from app.core.utils.emails.new_account_email import generate_new_account_email
 from fastapi import APIRouter, HTTPException, status
 from sqlmodel import Session
 
@@ -7,7 +8,7 @@ from app.core.config import settings
 from app.core.dtos.message import Message
 from app.core.dtos.users import UserCreate, UserUpdate
 from app.core.models.users import User
-from app.core.utils.email import generate_new_account_email, send_email
+from app.core.utils.email import send_email
 from app.core.repositories.users import UserRepository
 from app.core.services.users.validator import UsersValidationService
 
@@ -32,14 +33,14 @@ class AdminUsersService:
             )
 
         user = UserRepository.create_user(session=session, user_create=user_in)
-        if settings.emails_enabled and user_in.email:
+        if settings.emails_enabled:
             email_data = generate_new_account_email(
-                email_to=user_in.email, username=user_in.email, password=user_in.password
+                email_to=user_in.email,
+                token=user.verify_token,
             )
             send_email(
                 email_to=user_in.email,
-                subject=email_data.subject,
-                html_content=email_data.html_content,
+                email_data=email_data,
             )
         return user
 
