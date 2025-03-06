@@ -7,7 +7,7 @@ from pydantic import ValidationError
 
 from app.core import security
 from app.core.config import settings
-from app.core.dtos.token import TokenPayload
+from app.core.dtos.auth_token import TokenPayload
 from app.core.models.users import User
 
 from app.api.dependencies.session import SessionDep
@@ -33,10 +33,10 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
     return user
 
 
-CurrentUser = Annotated[User, Depends(get_current_user)]
+CurrentUserDep = Annotated[User, Depends(get_current_user)]
 
 
-def get_current_active_superuser(current_user: CurrentUser) -> User:
+def get_current_active_superuser(current_user: CurrentUserDep) -> User:
     if not current_user.is_superuser:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="The user doesn't have enough privileges"

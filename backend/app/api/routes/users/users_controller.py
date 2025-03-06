@@ -6,14 +6,14 @@ from fastapi import APIRouter
 from app.core.dtos.users import UserPublic
 
 from app.api.dependencies.session import SessionDep
-from app.api.dependencies.current_user import CurrentUser
+from app.api.dependencies.current_user import CurrentUserDep
 
 router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.get("/{user_id}", response_model=UserPublic)
 def read_user_by_id(
-    user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser
+    user_id: uuid.UUID, session: SessionDep, current_user: CurrentUserDep
 ) -> Any:
     """
     Get a specific user by id.

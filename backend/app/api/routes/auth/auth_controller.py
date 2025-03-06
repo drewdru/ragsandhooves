@@ -11,9 +11,9 @@ from fastapi import APIRouter, Body, Cookie, Depends, HTTPException, Request, Re
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.api.dependencies.session import SessionDep
-from app.api.dependencies.current_user import CurrentUser
+from app.api.dependencies.current_user import CurrentUserDep
 
-from app.core.dtos.token import CsrfToken, Token
+from app.core.dtos.auth_token import CsrfToken, Token
 from app.core.dtos.users import UserAuth, UserPublic, UserRegister
 
 from .auth_service import AuthService
@@ -93,7 +93,7 @@ def generate_csrf_token(
     )
 
 @router.post("/test-token", response_model=UserPublic)
-def test_token(current_user: CurrentUser) -> Any:
+def test_token(current_user: CurrentUserDep) -> Any:
     """
     Test access token
     """
@@ -136,7 +136,7 @@ def resend_verify_token(
     redis_client: RedisDep,
     session: SessionDep,
     lang: LangDep,
-    current_user: CurrentUser,
+    current_user: CurrentUserDep,
 ) -> Message:
     """
     Verify email

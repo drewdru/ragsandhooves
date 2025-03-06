@@ -17,7 +17,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from app.core import security
 from app.core.config import settings
-from app.core.dtos.token import CsrfToken, Token, TokenPayload
+from app.core.dtos.auth_token import CsrfToken, Token, TokenPayload
 import jwt
 from pydantic import ValidationError
 from redis import Redis
