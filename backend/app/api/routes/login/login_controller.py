@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.api.dependencies.session import SessionDep
 from app.api.dependencies.current_user import CurrentUser
 
-from app.core.dtos.token import Token
+from app.core.dtos.auth_token import Token
 from app.core.dtos.users import UserPublic
 
 from .login_service import LoginService
