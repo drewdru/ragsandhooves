@@ -1,6 +1,6 @@
 import uuid
 
-from app.core.dtos.token import Token
+from app.core.dtos.auth_token import Token
 from pydantic import EmailStr
 from sqlmodel import Field, SQLModel
 from pydantic import BaseModel

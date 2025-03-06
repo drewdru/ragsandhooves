@@ -13,7 +13,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.api.dependencies.session import SessionDep
 from app.api.dependencies.current_user import CurrentUserDep
 
-from app.core.dtos.token import CsrfToken, Token
+from app.core.dtos.auth_token import CsrfToken, Token
 from app.core.dtos.users import UserAuth, UserPublic, UserRegister
 
 from .auth_service import AuthService
