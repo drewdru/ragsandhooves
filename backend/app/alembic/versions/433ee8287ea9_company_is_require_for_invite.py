@@ -37,6 +37,15 @@ def upgrade():
         sa.ForeignKeyConstraint(['knowledge_base_id'], ['knowledge_bases.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('code')
     )
+    op.create_table('invite_users_links',
+        sa.Column('invite_code', sa.Uuid(), nullable=False),
+        sa.Column('user_id', sa.Uuid(), nullable=False),
+        sa.ForeignKeyConstraint(['invite_code'], ['invites.code'], ),
+        sa.ForeignKeyConstraint(['invite_code'], ['invites.code'], ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.PrimaryKeyConstraint('invite_code', 'user_id')
+    )
     op.create_foreign_key(None, 'invite_users_links', 'invites', ['invite_code'], ['code'])
     op.create_foreign_key(None, 'invite_users_links', 'invites', ['invite_code'], ['code'], ondelete='CASCADE')
     op.alter_column(
@@ -59,4 +68,5 @@ def downgrade():
     op.drop_constraint(None, 'invite_users_links', type_='foreignkey')
     op.drop_constraint(None, 'invite_users_links', type_='foreignkey')
     op.drop_table('invites')
+    op.drop_table('invite_users_links')
     # ### end Alembic commands ###
