@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 
 from app.api.dependencies.session import SessionDep
 from app.api.dependencies.current_user import (
-    CurrentUser,
+    CurrentUserDep,
     get_current_active_superuser,
 )
 from app.core.dtos.message import Message
@@ -45,7 +45,7 @@ def create_user(*, session: SessionDep, user_in: UserCreate) -> Any:
 def update_user(
     *,
     session: SessionDep, 
-    current_user: CurrentUser,
+    current_user: CurrentUserDep,
     user_id: uuid.UUID,
     user_in: UserUpdate,
 ) -> Any:
@@ -57,7 +57,7 @@ def update_user(
 
 @router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
 def delete_user(
-    session: SessionDep, current_user: CurrentUser, user_id: uuid.UUID
+    session: SessionDep, current_user: CurrentUserDep, user_id: uuid.UUID
 ) -> Message:
     """
     Delete a user.
