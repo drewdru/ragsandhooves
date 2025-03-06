@@ -7,7 +7,7 @@ from pydantic import ValidationError
 
 from app.core import security
 from app.core.config import settings
-from app.core.dtos.token import TokenPayload
+from app.core.dtos.auth_token import TokenPayload
 from app.core.models.users import User
 
 from app.api.dependencies.session import SessionDep

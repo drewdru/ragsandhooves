@@ -147,6 +147,8 @@ class Settings(BaseSettings):
         return [
             self.FRONTEND_WEBHOOK_TOKEN,
         ]
+    GOOGLE_GEMINI_API_KEY: str | None = None
+
     # endregion
 
     # region TOOLS
